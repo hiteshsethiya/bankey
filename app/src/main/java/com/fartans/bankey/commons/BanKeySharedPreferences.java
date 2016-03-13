@@ -13,7 +13,9 @@ import android.content.SharedPreferences;
 public class BanKeySharedPreferences {
 
     private static final String BANKEY_SHARED_PREFERENCE_NAME = "bankey_shared_preference_name";
+    private static final String AUTH_TOKEN_KEY = "auth_token";
 
+    private static String mAuthToken;
     private Context mContext;
     private static SharedPreferences mSharedPreferences;
     private static BanKeySharedPreferences mBanKeySharedPreferences;
@@ -60,5 +62,21 @@ public class BanKeySharedPreferences {
      */
     public void clear() {
         mSharedPreferences.edit().clear().apply();
+    }
+
+    public void saveAuthToken(String authToken) {
+        if(authToken == null) {
+            throw new NullPointerException("Auth token cannot be null for saving onto the shared preferences!");
+        }
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putString(AUTH_TOKEN_KEY,authToken);
+        editor.apply();
+    }
+
+    public String getAuthToken() {
+        if(mAuthToken == null) {
+            mAuthToken = getString(AUTH_TOKEN_KEY);
+        }
+        return mAuthToken;
     }
 }
