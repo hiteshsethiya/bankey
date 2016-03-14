@@ -35,8 +35,8 @@ public class KeyValueActivity extends AppCompatActivity {
         setContentView(R.layout.activity_keyvalue);
         //Get ValutID
         Intent intent = getIntent();
-        Bundle bundle=intent.getExtras();
-        vaultId=bundle.getInt("vaultId");
+        Bundle bundle = intent.getExtras();
+        vaultId = bundle.getInt("vaultId");
         setData();
 
     }

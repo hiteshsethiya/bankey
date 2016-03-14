@@ -130,7 +130,7 @@ public class AddCardVaultActivity extends AppCompatActivity {
             DbHandler.insertKeyValue(getApplicationContext(), keyValue);
 
             keyValue = new KeyValue();
-            keyValue.setName(CardVaultKeys.CardExpiryMonth);
+            keyValue.setName(CardVaultKeys.CardExpiryYear);
             keyValue.setValue(cardExpiryYear);
             keyValue.setVaultId(vaultId);
             DbHandler.insertKeyValue(getApplicationContext(), keyValue);
