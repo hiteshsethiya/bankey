@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SecureKeyActivity extends InputMethodService
+public class SecureKeyService extends InputMethodService
         implements KeyboardView.OnKeyboardActionListener {
 
     private KeyboardView kv;
@@ -144,9 +144,9 @@ public class SecureKeyActivity extends InputMethodService
             @Override
             public void onClick(View view) {
                 kv = (KeyboardView) getLayoutInflater().inflate(R.layout.keyboard, null);
-                keyboard = new Keyboard(SecureKeyActivity.this, R.xml.qwerty);
+                keyboard = new Keyboard(SecureKeyService.this, R.xml.qwerty);
                 kv.setKeyboard(keyboard);
-                kv.setOnKeyboardActionListener(SecureKeyActivity.this);
+                kv.setOnKeyboardActionListener(SecureKeyService.this);
                 setInputView(kv);
             }
         });
@@ -165,9 +165,9 @@ public class SecureKeyActivity extends InputMethodService
             @Override
             public void onClick(View view) {
                 kv = (KeyboardView) getLayoutInflater().inflate(R.layout.keyboard, null);
-                keyboard = new Keyboard(SecureKeyActivity.this, R.xml.qwerty);
+                keyboard = new Keyboard(SecureKeyService.this, R.xml.qwerty);
                 kv.setKeyboard(keyboard);
-                kv.setOnKeyboardActionListener(SecureKeyActivity.this);
+                kv.setOnKeyboardActionListener(SecureKeyService.this);
                 setInputView(kv);
             }
         });
@@ -416,7 +416,7 @@ public class SecureKeyActivity extends InputMethodService
         });
 
         alertDialogBuilder.setView(promptsView);
-        alertDialogBuilder.setMessage("Authenticate to SecureKeyActivity!");
+        alertDialogBuilder.setMessage("Authenticate to SecureKeyService!");
         alertDialogBuilder.setPositiveButton("Login",
                 new DialogInterface.OnClickListener() {
 
@@ -572,7 +572,7 @@ public class SecureKeyActivity extends InputMethodService
                     });
 
                     alertDialogBuilder.setView(promptsView);
-                    alertDialogBuilder.setMessage("Authenticate to SecureKeyActivity!");
+                    alertDialogBuilder.setMessage("Authenticate to SecureKeyService!");
                     alertDialogBuilder.setPositiveButton("Login",
                         new DialogInterface.OnClickListener() {
 

@@ -9,4 +9,5 @@
     <string name="title_activity_splash">SplashActivity</string>
 
     <string name="prompt_password">Password</string>
+    <string name="title_activity_add_card_vault">AddCardVaultActivity</string>
 </resources>

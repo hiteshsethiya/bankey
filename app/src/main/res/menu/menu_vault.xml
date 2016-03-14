@@ -3,4 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools" tools:context=".VaultActivity">
     <item android:id="@+id/action_add_key" android:title="Add"
         android:orderInCategory="100" app:showAsAction="always" />
+    <item android:id="@+id/action_add_card" android:title="Add Card"
+        android:orderInCategory="100" app:showAsAction="always" />
 </menu>

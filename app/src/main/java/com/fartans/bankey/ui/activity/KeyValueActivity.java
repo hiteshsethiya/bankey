@@ -48,7 +48,7 @@ public class KeyValueActivity extends AppCompatActivity {
         keyList = DbHandler.getPairsByvaultId(getApplicationContext(), vaultId);
 
         final List<String> kList = new ArrayList<>();
-        int i=0;
+        int i = 0;
         for(KeyValue key:keyList){
             kList.add(key.getName());
         }

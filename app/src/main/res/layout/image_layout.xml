@@ -5,9 +5,56 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/imageView"
-        android:src="@drawable/card_image"
+        android:src="@drawable/icici_credit_card"
         android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Card Number"
+        android:id="@+id/textViewCardNumber"
+        android:textColor="#FFF"
+        android:textSize="25sp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="96dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Expiry Month"
+        android:id="@+id/textViewExpiryMonth"
+        android:textColor="#FFF"
+        android:textSize="20sp"
+
+        android:layout_marginTop="39dp"
+        android:layout_below="@+id/textViewCardNumber"
+        android:layout_toStartOf="@+id/textViewCardNumber" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Expiry Year"
+        android:textColor="#FFF"
+        android:textSize="20sp"
+        android:id="@+id/textViewExpiryYear"
+        android:layout_alignTop="@+id/textViewExpiryMonth"
+        android:layout_alignEnd="@+id/textViewCardNumber" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Card Holder Name"
+        android:id="@+id/textViewCardHolderName"
+        android:textColor="#FFF"
+        android:layout_alignBottom="@+id/imageView"
+        android:layout_alignEnd="@+id/textViewCardNumber"
+        android:layout_marginBottom="17dp" />
 </RelativeLayout>
