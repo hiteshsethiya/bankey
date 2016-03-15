@@ -1,16 +1,23 @@
 package com.fartans.bankey.ui.activity;
 
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
 
 
 import com.fartans.bankey.R;
@@ -19,8 +26,10 @@ import com.fartans.bankey.db.DbTableStrings;
 import com.fartans.bankey.model.KeyValue;
 import com.fartans.bankey.model.Vault;
 import com.fartans.bankey.ui.fragment.AccountFragment;
+import com.fartans.bankey.ui.fragment.HomeFragment;
 import com.fartans.bankey.ui.fragment.OtherFragment;
 import com.fartans.bankey.ui.fragment.SpecialFragment;
+import com.fartans.bankey.ui.fragment.TabFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,39 +37,68 @@ import java.util.List;
 public class MainActivity extends ActionBarActivity {
     ArrayList<Vault> vaultlist;
     ArrayList<KeyValue> keyvaluelist;
-    TabLayout mTablayout;
-    ViewPager mViewPager;
+    DrawerLayout mDrawerLayout;
+    NavigationView mNavigationView;
+    FragmentManager mFragmentManager;
+    FragmentTransaction mFragmentTransaction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getSupportActionBar().hide();
 
         readfromvault();
         getKeyValues();
         inflateView();
-        setupWithViewPager();
-        setupTabLayout();
     }
 
     public void inflateView()
     {
-        mTablayout=(TabLayout)findViewById(R.id.home_tablayout);
-        mViewPager=(ViewPager)findViewById(R.id.home_viewpager);
-    }
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+        mNavigationView = (NavigationView) findViewById(R.id.shitstuff) ;
 
-    public void setupWithViewPager()
-    {
-        MainFragmentPagerAdapter adapter = new MainFragmentPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new AccountFragment(), "Account");
-        adapter.addFragment(new OtherFragment(), "Other");
-        adapter.addFragment(new SpecialFragment(), "Special");
-        mViewPager.setAdapter(adapter);
-    }
 
-    public void setupTabLayout()
-    {
-        mTablayout.setupWithViewPager(mViewPager);
+        mFragmentManager = getSupportFragmentManager();
+        mFragmentTransaction = mFragmentManager.beginTransaction();
+        mFragmentTransaction.replace(R.id.containerView,new TabFragment()).commit();
+
+        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                mDrawerLayout.closeDrawers();
+
+
+                if (menuItem.getItemId() == R.id.nav_item_home) {
+                    FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.containerView, new HomeFragment()).commit();
+
+                }
+
+                if (menuItem.getItemId() == R.id.nav_item_account) {
+                    FragmentTransaction xfragmentTransaction = mFragmentManager.beginTransaction();
+                    xfragmentTransaction.replace(R.id.containerView, new TabFragment()).commit();
+                }
+
+                if(menuItem.getItemId()==R.id.nav_item_card){
+                    Intent intent=new Intent(MainActivity.this,VaultActivity.class);
+                    startActivity(intent);
+                }
+
+                if(menuItem.getItemId()==R.id.nav_item_key){
+                    Intent intent=new Intent(MainActivity.this,VaultActivity.class);
+                    startActivity(intent);
+                }
+
+                return false;
+            }
+
+        });
+
+        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this,mDrawerLayout, toolbar,R.string.app_name, R.string.app_name);
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerToggle.syncState();
     }
 
     public ArrayList getKeyValues() {

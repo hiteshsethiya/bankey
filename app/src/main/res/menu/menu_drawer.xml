@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="Home"
+        android:id="@+id/nav_item_home" />
+
+    <item android:title="Account"
+        android:id="@+id/nav_item_account" />
+
+    <item android:title="History"
+        android:id="@+id/nav_item_histroy" />
+
+    <item android:title="Vault">
+        <menu>
+            <item
+                android:title="Card"
+                android:id="@+id/nav_item_card"/>
+            <item
+                android:title="Key"
+                android:id="@+id/nav_item_key"/>
+        </menu>
+    </item>
+
+    <group android:id="@+id/group_settings_id">
+
+        <item android:title="Settings" />
+        <item android:title="Help" />
+    </group>
+
+
+</menu>
