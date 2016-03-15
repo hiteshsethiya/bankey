@@ -26,7 +26,7 @@
     </style>
 
     <style name="TextAppearence.App.TextInputLayout" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/accentColor</item>
+        <item name="android:textColor">@color/light_green</item>
     </style>
 
     <style name="text_style" parent="@android:style/TextAppearance.Medium">
