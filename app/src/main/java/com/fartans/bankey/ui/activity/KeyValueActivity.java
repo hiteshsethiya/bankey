@@ -35,8 +35,8 @@ public class KeyValueActivity extends AppCompatActivity {
         setContentView(R.layout.activity_keyvalue);
         //Get ValutID
         Intent intent = getIntent();
-        Bundle bundle=intent.getExtras();
-        vaultId=bundle.getInt("vaultId");
+        Bundle bundle = intent.getExtras();
+        vaultId = bundle.getInt("vaultId");
         setData();
 
     }
@@ -48,7 +48,7 @@ public class KeyValueActivity extends AppCompatActivity {
         keyList = DbHandler.getPairsByvaultId(getApplicationContext(), vaultId);
 
         final List<String> kList = new ArrayList<>();
-        int i=0;
+        int i = 0;
         for(KeyValue key:keyList){
             kList.add(key.getName());
         }

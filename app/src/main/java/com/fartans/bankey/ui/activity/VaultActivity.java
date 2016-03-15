@@ -90,7 +90,7 @@ public class VaultActivity extends AppCompatActivity {
 
                 final Vault vault = vaultList.get(position);
 
-                if(vault.getIsSecure() == Vault.SECURE_VAULT){
+                if (vault.getIsSecure() == Vault.SECURE_VAULT || vault.getIsSecure() == Vault.CARD_VAULT) {
                     LayoutInflater li = LayoutInflater.from(VaultActivity.this);
                     View promptsView = li.inflate(R.layout.alert_vault_activity, null);
                     final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(VaultActivity.this);
@@ -127,7 +127,7 @@ public class VaultActivity extends AppCompatActivity {
                     );
                     AlertDialog alertDialog = alertDialogBuilder.create();
                     alertDialog.show();
-                }else {
+                } else {
 
                     Intent intent = new Intent(getApplicationContext(), KeyValueActivity.class);
                     intent.putExtra("vaultId", vaultList.get(position).getId());
@@ -154,6 +154,11 @@ public class VaultActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_add_key) {
             Intent intent = new Intent(VaultActivity.this, AddVaultActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        else if(id == R.id.action_add_card){
+            Intent intent = new Intent(this, AddCardVaultActivity.class);
             startActivity(intent);
             return true;
         }

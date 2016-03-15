@@ -10,6 +10,7 @@ public class Vault {
     int isSecure;
 
     public static final int SECURE_VAULT = 1;
+    public static final int CARD_VAULT = 2;
 
     public long getPasscode() {
         return passcode;
