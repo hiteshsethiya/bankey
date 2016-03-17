@@ -2,6 +2,14 @@ package com.fartans.bankey.commons;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
+
+import com.fartans.bankey.model.AuthToken;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by hitesh on 14/03/16.
@@ -12,10 +20,12 @@ import android.content.SharedPreferences;
  */
 public class BanKeySharedPreferences {
 
+    private static final String TAG = BanKeySharedPreferences.class.getName();
     private static final String BANKEY_SHARED_PREFERENCE_NAME = "bankey_shared_preference_name";
     private static final String AUTH_TOKEN_KEY = "auth_token";
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    private static String mAuthToken;
+    private static List<AuthToken> mAuthTokenList;
     private Context mContext;
     private static SharedPreferences mSharedPreferences;
     private static BanKeySharedPreferences mBanKeySharedPreferences;
@@ -64,19 +74,34 @@ public class BanKeySharedPreferences {
         mSharedPreferences.edit().clear().apply();
     }
 
-    public void saveAuthToken(String authToken) {
-        if(authToken == null) {
+    public void saveAuthToken(List<AuthToken> authTokenList) {
+        if(authTokenList == null) {
             throw new NullPointerException("Auth token cannot be null for saving onto the shared preferences!");
         }
         SharedPreferences.Editor editor = mSharedPreferences.edit();
-        editor.putString(AUTH_TOKEN_KEY,authToken);
+        try {
+            editor.putString(AUTH_TOKEN_KEY,OBJECT_MAPPER.writeValueAsString(authTokenList));
+        } catch (JsonProcessingException e) {
+            Log.e(TAG,"Exception while saving authtoken {}",e);
+        }
         editor.apply();
     }
 
-    public String getAuthToken() {
-        if(mAuthToken == null) {
-            mAuthToken = getString(AUTH_TOKEN_KEY);
+    /**
+     *
+     * @return auth token if available in memory, else from the shared preferences or null if not present in both
+     */
+    public List<AuthToken> getAuthToken() {
+        if(mAuthTokenList == null) {
+            String authTokenString = getString(AUTH_TOKEN_KEY);
+            try {
+                if(authTokenString != null) {
+                    mAuthTokenList = OBJECT_MAPPER.readValue(authTokenString,OBJECT_MAPPER.getTypeFactory().constructCollectionType(List.class, AuthToken.class));
+                }
+            } catch (IOException e) {
+                Log.e(TAG,"EXCEPTION while getting authtoken, e => {}",e);
+            }
         }
-        return mAuthToken;
+        return mAuthTokenList;
     }
 }

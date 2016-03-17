@@ -1,5 +1,6 @@
 package com.fartans.bankey.ui.activity;
 
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,12 +18,23 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.fartans.bankey.R;
+import com.fartans.bankey.commons.BanKeySharedPreferences;
 import com.fartans.bankey.db.DbHandler;
 import com.fartans.bankey.db.DbTableStrings;
+import com.fartans.bankey.model.AuthToken;
 import com.fartans.bankey.model.UserModel;
+import com.fartans.bankey.rest.RestClient;
+
+import java.util.List;
+
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private static final String TAG = LoginActivity.class.getName();
+    private ProgressDialog mProgressDialog;
     Button loginButton;
     EditText password;
     public static final String NAME = "name";
@@ -37,6 +50,9 @@ public class LoginActivity extends AppCompatActivity {
 
         this.setTitle("Login - Key+");
 
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setTitle("ICICI - Khyaal aapka");
+        mProgressDialog.setMessage("Loading...");
         //name = (EditText)findViewById(R.id.edittext_name);
         password = (EditText)findViewById(R.id.edittext_password);
         loginButton = (Button)findViewById(R.id.btn_login);
@@ -52,23 +68,8 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                String userPassword = "";
-                userPassword = password.getText().toString();
-
-                if(!userPassword.matches("")) {
-                    UserModel model = new UserModel();
-                    model.UserName = "user";
-                    model.Password = Long.parseLong(userPassword);
-                    if (DbHandler.authUser(getApplicationContext(), model)) {
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
-                }
-                else {
-                    Toast.makeText(getApplicationContext(), "Login Failed", Toast.LENGTH_LONG).show();
-                }
+                mProgressDialog.show();
+                setUpAuth();
             }
         });
 
@@ -170,4 +171,41 @@ public class LoginActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    private void setUpAuth() {
+        RestClient restClient = RestClient.getInstance(LoginActivity.this);
+        restClient.getAuthenticationService().getAuthToken(RestClient.CLIENT_ID,RestClient.ACCESS_CODE).enqueue(mAuthTokenCallBack);
+    }
+
+    private final Callback<List<AuthToken>> mAuthTokenCallBack = new Callback<List<AuthToken>>() {
+        @Override
+        public void onResponse(Response<List<AuthToken>> response, Retrofit retrofit) {
+            mProgressDialog.hide();
+            if(response.isSuccess()) {
+                BanKeySharedPreferences.getInstance(LoginActivity.this).saveAuthToken(response.body());
+                String userPassword = password.getText().toString();
+                if(!userPassword.isEmpty()) {
+                    UserModel model = new UserModel();
+                    model.UserName = "user";
+                    model.Password = Long.parseLong(userPassword);
+                    if (DbHandler.authUser(getApplicationContext(), model)) {
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Login Failed", Toast.LENGTH_LONG).show();
+                }
+            } else {
+                Log.e(TAG,"Failure from server!");
+            }
+        }
+
+        @Override
+        public void onFailure(Throwable t) {
+            mProgressDialog.hide();
+            Log.e(TAG,"Failure from server!",t);
+        }
+    };
 }

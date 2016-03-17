@@ -5,5 +5,6 @@ package com.fartans.bankey.commons;
  */
 public class BankeyConstants {
 
-    public static final String BASE_URL_RETROFIT = "need to figure out/";
+    public static final String CORPORATE_BANK_BASE_URL = "http://corporate_bank.mybluemix.net/";
+
 }
