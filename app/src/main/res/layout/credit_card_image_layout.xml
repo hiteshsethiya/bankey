@@ -30,7 +30,7 @@
         android:text="Expiry Month"
         android:id="@+id/textViewExpiryMonth"
         android:textColor="#FFF"
-        android:textSize="20sp"
+        android:textSize="18sp"
 
         android:layout_marginTop="39dp"
         android:layout_below="@+id/textViewCardNumber"
@@ -42,7 +42,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Expiry Year"
         android:textColor="#FFF"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:id="@+id/textViewExpiryYear"
         android:layout_alignTop="@+id/textViewExpiryMonth"
         android:layout_alignEnd="@+id/textViewCardNumber" />
