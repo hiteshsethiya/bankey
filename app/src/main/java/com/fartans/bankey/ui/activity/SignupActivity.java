@@ -54,7 +54,7 @@ public class SignupActivity extends AppCompatActivity {
 
                         DbHandler.insertUser(getApplicationContext(), userModel);
 
-                        Intent intent = new Intent(SignupActivity.this, VaultActivity.class);
+                        Intent intent = new Intent(SignupActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();
                     }

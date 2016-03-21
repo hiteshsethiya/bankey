@@ -14,28 +14,11 @@
         android:paddingLeft="24dp"
         android:paddingRight="24dp">
 
-
         <ImageView android:src="@drawable/icon_login"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginBottom="24dp"
             android:layout_gravity="center_horizontal" />
-
-
-<!--        &lt;!&ndash;  Name Label &ndash;&gt;
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
-            <EditText android:id="@+id/edittext_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                android:hint="Name" />
-        </android.support.design.widget.TextInputLayout>-->
-
 
         <!--  Password Label -->
         <android.support.design.widget.TextInputLayout
