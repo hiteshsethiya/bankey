@@ -2,10 +2,10 @@
 <resources>
     <color name="primaryColor">#009688</color>
     <color name="primaryColordark">#00796B</color>
-    <color name="accentColor">#64FFDA</color>
+    <!--<color name="accentColor">#64FFDA</color>-->
 
+    <color name="accentColor">#8A8884</color>
     <color name="white">#ffffff</color>
-    <color name="light_green">#1DE9B6</color>
     <color name="text_dark">#ad31000f</color>
     <color name="gray">#d3d3d3</color>
     <color name="blue_grey">#455A64</color>
