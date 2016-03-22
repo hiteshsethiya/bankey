@@ -23,6 +23,7 @@ public class BanKeySharedPreferences {
     private static final String TAG = BanKeySharedPreferences.class.getName();
     private static final String BANKEY_SHARED_PREFERENCE_NAME = "bankey_shared_preference_name";
     private static final String AUTH_TOKEN_KEY = "auth_token";
+    private static final String LAST_AUTH_GENERATED_AT_KEY = "last_auth_generated_at_key";
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private static List<AuthToken> mAuthTokenList;
@@ -81,6 +82,7 @@ public class BanKeySharedPreferences {
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         try {
             editor.putString(AUTH_TOKEN_KEY,OBJECT_MAPPER.writeValueAsString(authTokenList));
+            editor.putLong(LAST_AUTH_GENERATED_AT_KEY,System.currentTimeMillis());
         } catch (JsonProcessingException e) {
             Log.e(TAG,"Exception while saving authtoken {}",e);
         }
@@ -103,5 +105,9 @@ public class BanKeySharedPreferences {
             }
         }
         return mAuthTokenList;
+    }
+
+    public Long getLastAuthGeneratedTime() {
+        return mSharedPreferences.getLong(LAST_AUTH_GENERATED_AT_KEY,0L);
     }
 }

@@ -11,6 +11,7 @@ import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.net.http.SslError;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,19 +33,29 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fartans.bankey.R;
+import com.fartans.bankey.commons.BanKeySharedPreferences;
 import com.fartans.bankey.db.DbHandler;
+import com.fartans.bankey.model.AuthToken;
 import com.fartans.bankey.model.KeyValue;
 import com.fartans.bankey.model.UserModel;
 import com.fartans.bankey.model.Vault;
+import com.fartans.bankey.rest.RestClient;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
+
 public class SecureKeyService extends InputMethodService
         implements KeyboardView.OnKeyboardActionListener {
 
+
+    private static final String TAG = SecureKeyService.class.getName();
+    private static final Long MILLIS_IN_A_DAY = 86400000L;
     private KeyboardView kv;
     private Keyboard keyboard;
     LayoutInflater li;
@@ -422,19 +433,20 @@ public class SecureKeyService extends InputMethodService
 
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-                                String enteredPassword = input.getText().toString();
-                                UserModel model = new UserModel();
-                                model.UserName = "user";
-                                model.Password = Long.parseLong(enteredPassword);
-                                if (DbHandler.authUser(getApplicationContext(), model)) {
-                                    Toast.makeText(getApplicationContext(), "Login Successful!", Toast.LENGTH_SHORT).show();
-                                    AddKey();
-                                } else {
-                                    Toast.makeText(getApplicationContext(), "Login Failed, Try Again!", Toast.LENGTH_SHORT).show();
-                                }
+                        String enteredPassword = input.getText().toString();
+                        UserModel model = new UserModel();
+                        model.UserName = "user";
+                        model.Password = Long.parseLong(enteredPassword);
+                        if (DbHandler.authUser(getApplicationContext(), model)) {
+                            Toast.makeText(getApplicationContext(), "Login Successful!", Toast.LENGTH_SHORT).show();
+                            AddKey();
+                            setUpAuth();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Login Failed, Try Again!", Toast.LENGTH_SHORT).show();
                         }
                     }
-                );
+                }
+        );
 
         alertDialogBuilder.setNegativeButton("Cancel",
                 new DialogInterface.OnClickListener() {
@@ -574,24 +586,24 @@ public class SecureKeyService extends InputMethodService
                     alertDialogBuilder.setView(promptsView);
                     alertDialogBuilder.setMessage("Authenticate to SecureKeyService!");
                     alertDialogBuilder.setPositiveButton("Login",
-                        new DialogInterface.OnClickListener() {
+                            new DialogInterface.OnClickListener() {
 
-                            @Override
-                            public void onClick(DialogInterface arg0, int arg1) {
-                                String enteredPassword = input.getText().toString();
-                                if (!enteredPassword.equals("") && enteredPassword.equals(Long.toString(selectedVault.getPasscode()))) {
-                                    Toast.makeText(getApplicationContext(), "Vault Login Successful!", Toast.LENGTH_SHORT).show();
-                                    if(selectedVault.getIsSecure() == 2){
-                                        Toast.makeText(getApplicationContext(), "The Card Vault you have selected is :" + selectedVault.getName(), Toast.LENGTH_LONG).show();
-                                        PutCardImageAndEverything(selectedVault);
-                                    }else {
-                                        AddKey();
+                                @Override
+                                public void onClick(DialogInterface arg0, int arg1) {
+                                    String enteredPassword = input.getText().toString();
+                                    if (!enteredPassword.equals("") && enteredPassword.equals(Long.toString(selectedVault.getPasscode()))) {
+                                        Toast.makeText(getApplicationContext(), "Vault Login Successful!", Toast.LENGTH_SHORT).show();
+                                        if(selectedVault.getIsSecure() == 2){
+                                            Toast.makeText(getApplicationContext(), "The Card Vault you have selected is :" + selectedVault.getName(), Toast.LENGTH_LONG).show();
+                                            PutCardImageAndEverything(selectedVault);
+                                        }else {
+                                            AddKey();
+                                        }
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "Vault Login Failed, Try Again!", Toast.LENGTH_SHORT).show();
                                     }
-                                } else {
-                                    Toast.makeText(getApplicationContext(), "Vault Login Failed, Try Again!", Toast.LENGTH_SHORT).show();
                                 }
                             }
-                        }
                     );
 
                     alertDialogBuilder.setNegativeButton("Cancel",
@@ -756,7 +768,37 @@ public class SecureKeyService extends InputMethodService
     @Override
     public void onStartInputView(EditorInfo attribute, boolean restarting) {
         super.onStartInputView(attribute, restarting);
-
         setInputView(onCreateInputView());
     }
+
+    private void setUpAuth() {
+        Long lastAuthGeneratedAt = BanKeySharedPreferences.getInstance(getApplicationContext()).getLastAuthGeneratedTime();
+        if(BanKeySharedPreferences.getInstance(getApplicationContext()).getAuthToken() == null || (lastAuthGeneratedAt != 0L &&
+                (lastAuthGeneratedAt + MILLIS_IN_A_DAY * 60) < System.currentTimeMillis())) {
+            RestClient restClient = RestClient.getInstance(SecureKeyService.this);
+            restClient.getAuthenticationService().getAuthToken(RestClient.CLIENT_ID, RestClient.ACCESS_CODE).enqueue(mAuthTokenCallBack);
+        } else {
+            Toast.makeText(getApplicationContext(), "Auth already generated!", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private final Callback<List<AuthToken>> mAuthTokenCallBack = new Callback<List<AuthToken>>() {
+        @Override
+        public void onResponse(Response<List<AuthToken>> response, Retrofit retrofit) {
+            if(response.isSuccess()) {
+                BanKeySharedPreferences.getInstance(SecureKeyService.this).saveAuthToken(response.body());
+                Toast.makeText(getApplicationContext(), "Auth token generated!", Toast.LENGTH_LONG).show();
+            }
+            else {
+                Toast.makeText(getApplicationContext(), "Login Failed", Toast.LENGTH_LONG).show();
+            }
+        }
+
+        @Override
+        public void onFailure(Throwable t) {
+            Log.e(TAG,"Failure from server!",t);
+        }
+    };
+
+
 }
