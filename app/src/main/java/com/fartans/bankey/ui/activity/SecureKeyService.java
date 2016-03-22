@@ -315,7 +315,7 @@ public class SecureKeyService extends InputMethodService
 
     private void NewTest() {
         pavan = true;
-        RelativeLayout v = (RelativeLayout) getLayoutInflater().inflate(R.layout.image_layout, null);
+        RelativeLayout v = (RelativeLayout) getLayoutInflater().inflate(R.layout.credit_card_image_layout, null);
         setInputView(v);
     }
 
@@ -483,7 +483,7 @@ public class SecureKeyService extends InputMethodService
                 final String item = (String) parent.getItemAtPosition(position);
                 final Vault selectedVault = vaults.get(position);
 
-                if(selectedVault.getIsSecure() == 1){
+                if(selectedVault.getIsSecure() == 1 || selectedVault.getIsSecure() == 2){
                     View promptsView = li.inflate(R.layout.authenticate, null);
                     final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getApplicationContext());
                     final EditText input = (EditText) promptsView.findViewById(R.id.editTextPassword);
@@ -581,7 +581,12 @@ public class SecureKeyService extends InputMethodService
                                 String enteredPassword = input.getText().toString();
                                 if (!enteredPassword.equals("") && enteredPassword.equals(Long.toString(selectedVault.getPasscode()))) {
                                     Toast.makeText(getApplicationContext(), "Vault Login Successful!", Toast.LENGTH_SHORT).show();
-                                    AddKey();
+                                    if(selectedVault.getIsSecure() == 2){
+                                        Toast.makeText(getApplicationContext(), "The Card Vault you have selected is :" + selectedVault.getName(), Toast.LENGTH_LONG).show();
+                                        PutCardImageAndEverything(selectedVault);
+                                    }else {
+                                        AddKey();
+                                    }
                                 } else {
                                     Toast.makeText(getApplicationContext(), "Vault Login Failed, Try Again!", Toast.LENGTH_SHORT).show();
                                 }
@@ -611,37 +616,47 @@ public class SecureKeyService extends InputMethodService
                 }
 
                 Toast.makeText(getApplicationContext(), "You have clicked :" + selectedVault.getName(), Toast.LENGTH_LONG).show();
-                alertDialog.setMessage("Choose the key to Insert!");
-                //String[] vaults = new String[]{"New", "Set", "Of", "Strings"};
 
-                final List<KeyValue> kv = DbHandler.getAllPairs(getApplicationContext());
-                final List<KeyValue> mkv = new ArrayList<KeyValue>();
-                for(int i = 0; i < kv.size(); i++){
-                    if(kv.get(i).getVaultId() == selectedVault.getId()){
-                        mkv.add(kv.get(i));
+                if(selectedVault.getIsSecure() == 2){
+                    /*Toast.makeText(getApplicationContext(), "The Card Vault you have selected is :" + selectedVault.getName(), Toast.LENGTH_LONG).show();
+                    alertDialog.dismiss();
+                    PutCardImageAndEverything(selectedVault);*/
+                    alertDialog.dismiss();
+
+                }else {
+
+                    alertDialog.setMessage("Choose the key to Insert!");
+                    //String[] vaults = new String[]{"New", "Set", "Of", "Strings"};
+
+                    final List<KeyValue> kv = DbHandler.getAllPairs(getApplicationContext());
+                    final List<KeyValue> mkv = new ArrayList<KeyValue>();
+                    for (int i = 0; i < kv.size(); i++) {
+                        if (kv.get(i).getVaultId() == selectedVault.getId()) {
+                            mkv.add(kv.get(i));
+                        }
                     }
-                }
 
-                final String[] keyNames = new String[mkv.size()];
-                for(int i = 0; i < mkv.size(); i++){
-                    keyNames[i] = mkv.get(i).getName();
-                }
-
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.plain_text_list_item, keyNames );
-                listView.setAdapter(adapter);
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, final View view,
-                                            int position, long id) {
-                        final String item = (String) parent.getItemAtPosition(position);
-                        KeyValue toBeInserted = mkv.get(position);
-                        Toast.makeText(getApplicationContext(), "You have clicked :" + toBeInserted.getName(), Toast.LENGTH_LONG).show();
-                        InputConnection ic = getCurrentInputConnection();
-                        ic.commitText(toBeInserted.getValue(), toBeInserted.getValue().length());
-                        alertDialog.dismiss();
+                    final String[] keyNames = new String[mkv.size()];
+                    for (int i = 0; i < mkv.size(); i++) {
+                        keyNames[i] = mkv.get(i).getName();
                     }
-                });
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.plain_text_list_item, keyNames);
+                    listView.setAdapter(adapter);
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, final View view,
+                                                int position, long id) {
+                            final String item = (String) parent.getItemAtPosition(position);
+                            KeyValue toBeInserted = mkv.get(position);
+                            Toast.makeText(getApplicationContext(), "You have clicked :" + toBeInserted.getName(), Toast.LENGTH_LONG).show();
+                            InputConnection ic = getCurrentInputConnection();
+                            ic.commitText(toBeInserted.getValue(), toBeInserted.getValue().length());
+                            alertDialog.dismiss();
+                        }
+                    });
+                }
             }
         });
         alertDialogBuilder.setView(promptsView);
@@ -653,6 +668,58 @@ public class SecureKeyService extends InputMethodService
         window.addFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
         alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         alertDialog.show();
+    }
+
+    private void PutCardImageAndEverything(final Vault selectedVault) {
+        pavan = true;
+        RelativeLayout v = (RelativeLayout) getLayoutInflater().inflate(R.layout.credit_card_image_layout, null);
+
+        final List<KeyValue> kv = DbHandler.getAllPairs(getApplicationContext());
+        final List<KeyValue> mkv = new ArrayList<KeyValue>();
+        for (int i = 0; i < kv.size(); i++) {
+            if (kv.get(i).getVaultId() == selectedVault.getId()) {
+                mkv.add(kv.get(i));
+            }
+        }
+
+        TextView textViewCardNumber = (TextView) v.findViewById(R.id.textViewCardNumber);
+        TextView textViewCardHolderName = (TextView) v.findViewById(R.id.textViewCardHolderName);
+        TextView textViewCardExpiryMonth = (TextView) v.findViewById(R.id.textViewExpiryMonth);
+        TextView textViewCardExpiryYear = (TextView) v.findViewById(R.id.textViewExpiryYear);
+
+        textViewCardNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                InputConnection ic = getCurrentInputConnection();
+                ic.commitText(mkv.get(0).getValue(), mkv.get(0).getValue().length());
+            }
+        });
+
+        textViewCardHolderName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                InputConnection ic = getCurrentInputConnection();
+                ic.commitText(mkv.get(1).getValue(), mkv.get(1).getValue().length());
+            }
+        });
+
+        textViewCardExpiryMonth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                InputConnection ic = getCurrentInputConnection();
+                ic.commitText(mkv.get(2).getValue(), mkv.get(2).getValue().length());
+            }
+        });
+
+        textViewCardExpiryYear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                InputConnection ic = getCurrentInputConnection();
+                ic.commitText(mkv.get(3).getValue(), mkv.get(3).getValue().length());
+            }
+        });
+
+        setInputView(v);
     }
 
     @Override
