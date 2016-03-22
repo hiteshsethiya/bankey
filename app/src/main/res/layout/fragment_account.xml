@@ -1,11 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@+id/AccountSumamaryLayout"
+    android:weightSum="1">
 
     <android.support.v7.widget.AppCompatTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Account Information"/>
+        android:text="Account Information"
+        android:layout_gravity="center"
+        android:id="@+id/accountinfo"
+        style="@style/TextAppearance.AppCompat.Large"
+        android:singleLine="false"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:gravity="center_horizontal"
+        android:layout_margin="10dp"
+        android:layout_weight="0.07" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Balance Amount"
+        android:id="@+id/tvbalanceamt"
+        android:gravity="center_horizontal"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="Balance Here"
+        android:id="@+id/tvbalance"
+        android:layout_margin="10dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Currency Denomination"
+        android:gravity="center_horizontal"
+        android:textStyle="bold"
+        android:id="@+id/tvCurrencyDenomination" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Currency"
+        android:gravity="center_horizontal"
+        android:layout_margin="10dp"
+        android:id="@+id/tvCurrency" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Account Number"
+        android:gravity="center_horizontal"
+        android:textStyle="bold"
+        android:id="@+id/tvacc" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="tvaccnum"
+        android:gravity="center_horizontal"
+        android:layout_margin="10dp"
+        android:id="@+id/tvaccnum" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Account Status"
+        android:gravity="center_horizontal"
+        android:textStyle="bold"
+        android:id="@+id/status" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Account Status"
+        android:gravity="center_horizontal"
+        android:layout_margin="10dp"
+        android:id="@+id/tvaccstatus" />
+
 
 </LinearLayout>
