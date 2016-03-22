@@ -33,6 +33,7 @@ import retrofit.Retrofit;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private static final Long MILLIS_IN_A_DAY = 86400000L;
     private static final String TAG = LoginActivity.class.getName();
     private ProgressDialog mProgressDialog;
     Button loginButton;
@@ -173,8 +174,14 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void setUpAuth() {
-        RestClient restClient = RestClient.getInstance(LoginActivity.this);
-        restClient.getAuthenticationService().getAuthToken(RestClient.CLIENT_ID,RestClient.ACCESS_CODE).enqueue(mAuthTokenCallBack);
+        Long lastAuthGeneratedAt = BanKeySharedPreferences.getInstance(getApplicationContext()).getLastAuthGeneratedTime();
+        if(BanKeySharedPreferences.getInstance(getApplicationContext()).getAuthToken() == null || (lastAuthGeneratedAt != 0L &&
+                (lastAuthGeneratedAt + MILLIS_IN_A_DAY * 60) < System.currentTimeMillis())) {
+            RestClient restClient = RestClient.getInstance(LoginActivity.this);
+            restClient.getAuthenticationService().getAuthToken(RestClient.CLIENT_ID,RestClient.ACCESS_CODE).enqueue(mAuthTokenCallBack);
+        } else {
+            Toast.makeText(getApplicationContext(), "Auth already generated!", Toast.LENGTH_LONG).show();
+        }
     }
 
     private final Callback<List<AuthToken>> mAuthTokenCallBack = new Callback<List<AuthToken>>() {
