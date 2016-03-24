@@ -3,15 +3,63 @@
     android:layout_width="match_parent"
     android:layout_height="fill_parent">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="200dp">
-        <WebView  xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/webview"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            />
-    </ScrollView>
+   <RelativeLayout
+       android:layout_width="match_parent"
+       android:layout_height="200dp">
+
+       <TextView
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:text="Balance Amount"
+           android:id="@+id/tvbalanceamt"
+           android:gravity="center_horizontal"
+           android:textStyle="bold" />
+
+       <TextView
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:gravity="center_horizontal"
+           android:layout_below="@+id/tvbalanceamt"
+           android:text="999.0"
+           android:id="@+id/tvbalance"
+           android:layout_margin="10dp" />
+
+       <TextView
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:text="Currency Denomination"
+           android:gravity="center_horizontal"
+           android:layout_below="@+id/tvbalance"
+           android:textStyle="bold"
+           android:id="@+id/tvCurrencyDenomination" />
+
+       <TextView
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:text="INR"
+           android:layout_below="@+id/tvCurrencyDenomination"
+           android:gravity="center_horizontal"
+           android:layout_margin="10dp"
+           android:id="@+id/tvCurrency" />
+
+       <TextView
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:text="Account Number"
+           android:gravity="center_horizontal"
+           android:layout_below="@+id/tvCurrency"
+           android:textStyle="bold"
+           android:id="@+id/tvacc" />
+
+       <TextView
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:text="7777777777"
+           android:gravity="center_horizontal"
+           android:layout_below="@+id/tvacc"
+           android:layout_margin="10dp"
+           android:id="@+id/tvaccnum" />
+   </RelativeLayout>
 
     <ImageView
         android:layout_width="wrap_content"
