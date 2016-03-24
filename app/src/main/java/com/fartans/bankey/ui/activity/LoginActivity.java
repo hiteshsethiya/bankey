@@ -180,6 +180,14 @@ public class LoginActivity extends AppCompatActivity {
             RestClient restClient = RestClient.getInstance(LoginActivity.this);
             restClient.getAuthenticationService().getAuthToken(RestClient.CLIENT_ID,RestClient.ACCESS_CODE).enqueue(mAuthTokenCallBack);
         } else {
+            mProgressDialog.hide();
+            String userPassword = password.getText().toString();
+            if(!userPassword.isEmpty()) {
+                validatePassword(userPassword);
+            }
+            else {
+                Toast.makeText(getApplicationContext(), "Login Failed", Toast.LENGTH_LONG).show();
+            }
             Toast.makeText(getApplicationContext(), "Auth already generated!", Toast.LENGTH_LONG).show();
         }
     }
@@ -192,20 +200,13 @@ public class LoginActivity extends AppCompatActivity {
                 BanKeySharedPreferences.getInstance(LoginActivity.this).saveAuthToken(response.body());
                 String userPassword = password.getText().toString();
                 if(!userPassword.isEmpty()) {
-                    UserModel model = new UserModel();
-                    model.UserName = "user";
-                    model.Password = Long.parseLong(userPassword);
-                    if (DbHandler.authUser(getApplicationContext(), model)) {
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
+                   validatePassword(userPassword);
                 }
                 else {
                     Toast.makeText(getApplicationContext(), "Login Failed", Toast.LENGTH_LONG).show();
                 }
             } else {
-                Log.e(TAG,"Failure from server!");
+                Log.e(TAG, "Failure from server!");
             }
         }
 
@@ -215,4 +216,16 @@ public class LoginActivity extends AppCompatActivity {
             Log.e(TAG,"Failure from server!",t);
         }
     };
+
+    public void validatePassword(String userPassword)
+    {
+        UserModel model = new UserModel();
+        model.UserName = "user";
+        model.Password = Long.parseLong(userPassword);
+        if (DbHandler.authUser(getApplicationContext(), model)) {
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
+    }
 }
